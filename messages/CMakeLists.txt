@@ -1,15 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1...3.29)
 
-## generate protobuf (the default cmake command does not work well with subdirectories) ##
 set(OUT_PYTHON ${CMAKE_CURRENT_SOURCE_DIR}/../python_scripts/)
-set(OUT_CPP ${CMAKE_CURRENT_BINARY_DIR}/)
 
-get_filename_component(FIL_WE ${PROTO_FILE} NAME_WE)
-
-set(ARGS "-I=${CMAKE_CURRENT_SOURCE_DIR} --python_out ${OUT_PYTHON} --cpp_out ${OUT_CPP} --proto_path ${PROTOBUF_INCLUDE_DIRS}")
-set(PROTOBUF_COMMAND "${PROTOBUF_PROTOC_EXECUTABLE} ${ARGS} ${PROTO_FILE}")
-EXEC_PROGRAM(${PROTOBUF_COMMAND})
-
-
-set(PROTO_SRCS ${OUT_CPP}${FIL_WE}.pb.cc PARENT_SCOPE)
-set(PROTO_HDRS ${OUT_CPP}${FIL_WE}.pb.h PARENT_SCOPE)
+set(PROTO_FILE ${CMAKE_CURRENT_SOURCE_DIR}/kinMsg.proto)
+include(FindProtobuf)
+find_package(Protobuf REQUIRED)
+protobuf_generate_cpp(PROTO_SRC PROTO_HEADER ${PROTO_FILE})
+protobuf_generate_python(PROTO_PY ${PROTO_FILE} PROTOC_OUT_DIR ${OUT_PYTHON})
+add_library(proto ${PROTO_HEADER} ${PROTO_SRC})
+add_custom_target(pyproto ALL 
+                  DEPENDS ${PROTO_PY})
+target_include_directories(proto
+                           INTERFACE ${PROTOBUF_INCLUDE_DIR}
+                           INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
+                           )
+target_link_libraries(proto ${PROTOBUF_LIBRARY})

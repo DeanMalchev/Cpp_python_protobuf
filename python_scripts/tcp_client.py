@@ -50,14 +50,14 @@ class tcp_client:
 		self.client_socket.connect((TCP_IP, TCP_PORT))
 		self.connection = True
 
-		print "Connection established, starting main loop"
+		print("Connection established, starting main loop")
 
 		self.run()
 
 
 	def signal_handler(self, signal, frame):
 
-		print "SIGINT caught, exiting ..."
+		print("SIGINT caught, exiting ...")
 		if self.connection:
 			self.connection = False
 
@@ -68,7 +68,7 @@ class tcp_client:
 			self.message.endconnection = False
 			s = self.message.SerializeToString()
 			totallen = 4 + self.message.ByteSize()
-			self.client_socket.sendall(str(totallen).zfill(4) + s)
+			self.client_socket.sendall(bytes(str(totallen).zfill(4),"utf-8") + s)
 
 			# get response from server with robot data
 			data_hdr = self.client_socket.recv(4)
@@ -79,15 +79,13 @@ class tcp_client:
 			self.connection = not self.data_m.endconnection
 
 			numpoints = self.data_m.shape.numpoints
-			P = np.array(self.data_m.shape.P._values)
+			P = np.array(self.data_m.shape.P)
 			x = np.array([el.x for el in P])
 			y = np.array([el.y for el in P])
 			z = np.array([el.z for el in P])
-			print x
-			print y
-			print z
+			print(x,y,z)
 
-		print "Closing socket ..."
+		print("Closing socket ...")
 		self.client_socket.close()
 
 

@@ -51,14 +51,14 @@ class tcp_server:
 		self.conn, self.addr = self.socket.accept()
 		
 		self.connection = True
-		print "Connection established, starting main loop"
+		print("Connection established, starting main loop")
 
 		self.run()
 
 
 	def signal_handler(self, signal, frame):
 
-		print "SIGINT caught, exiting ..."
+		print("SIGINT caught, exiting ...")
 		if self.connection:
 			self.connection = False
 
@@ -92,9 +92,9 @@ class tcp_server:
 
 			s = self.data_m.SerializeToString()
 			totallen = 4 + self.data_m.ByteSize()
-			self.conn.sendall(str(totallen).zfill(4) + s)
+			self.conn.sendall(bytes(str(totallen).zfill(4),"utf-8") + s)
 
-		print "Closing socket ..."
+		print("Closing socket ...")
 		self.conn.close()
 
 
