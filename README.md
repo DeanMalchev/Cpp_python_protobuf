@@ -1,5 +1,18 @@
 # Cpp_python_protobuf
+This is a simple example of python/C++ communication using 
+protobuf for serialization and UNIX sockets originally written by 
+[Benoit Rosa](https://github.com/benoitrosa/Cpp_python_protobuf/). 
+For client and server there are implementations in C++ and python. 
 
-This is a simple example of python/c++ communication example using protobuf for serialization and UNIX sockets. The server is written in C++ while the client is written in python. 
+Cmake files and python code have been updated to work on Linux 
+Arch (kernel 6.9.7-arch1-1). The only (obvious) dependency, aside 
+of UNIX socket functions, is the [protobuf](https://protobuf.dev/) 
+library.
 
-It has been tested on Ubuntu 16.04. The only (obvious) dependency, aside of UNIX socket functions, is protobuf : https://developers.google.com/protocol-buffers/
+In order to build the example, execute the following commands
+(assuming your current directory is the repository's root):
+```
+    cmake -S . -B build 
+    cmake --build build
+```
+The (C++) executables can be found in the `build` sub directory.
